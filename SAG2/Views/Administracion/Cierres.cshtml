@@ -1,0 +1,149 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+@using SAG2.Models;
+@{
+    ViewBag.Title = "Cierres";
+    SAG2DB db = new SAG2DB();
+    int periodo = @ViewBag.periodo;
+}
+<div class="permisos">
+    <h2 align="center">REGISTRO CIERRES PERÍODO @periodo</h2>
+    @using (Html.BeginForm())
+    { 
+        @Html.Raw("Período:") 
+        <select name="periodo" id="periodo">
+        @for (var i = DateTime.Now.Year; i > DateTime.Now.Year - 5; i--)
+        {
+            <option value="@Html.Raw((@i).ToString())" @if (i == periodo) {@Html.Raw("selected=\"selected\"");}>@Html.Raw((@i).ToString())</option>
+        }
+        </select>
+        <input type="submit" value="Aceptar" />
+    }
+    <br />
+    <table border="0" cellspacing="0" cellpadding="5">
+      <tr>
+        <td>&nbsp;</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Enero</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Febrero</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Marzo</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Abril</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Mayo</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Junio</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Julio</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Agosto</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Septiembre</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Octubre</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Noviembre</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Diciembre</td>
+      </tr>
+    @foreach (var Proyecto in Model)
+    {
+        int proyectoID = Proyecto.ID;
+      <tr>
+        <td>@Proyecto.NombreLista</td>
+        
+          @for (int i = 1; i < 13; i++)
+          {
+            try
+            {
+                Periodo pe = db.Periodo.Where(p => p.ProyectoID == proyectoID && p.Mes == i & p.Ano == periodo).Single();
+                DateTime d1 = pe.Fecha.Value;
+                DateTime d2;
+                if (i == 12)
+                {
+                    d2 = Convert.ToDateTime("7/1/" + (periodo+1)); ;
+                }
+                else
+                {
+                    d2 = Convert.ToDateTime("7/" + (i + 1) + "/" + periodo); ;
+                }
+                TimeSpan t1 = d2.Subtract(d1);
+                if (t1.Days < 0)
+                {
+                    @Html.Raw("<td align=\"center\" style=\"color: white; background-color: red;\">");
+                    @Html.Raw(@pe.Fecha.Value.ToShortDateString());
+                }
+                else
+                {
+                    @Html.Raw("<td align=\"center\">");
+                    @Html.Raw(@pe.Fecha.Value.ToShortDateString());
+                }
+                @Html.Raw("</td>");
+            }
+            catch
+            { 
+                @Html.Raw("<td align=\"center\"></td>");
+            }
+          }
+          </tr>
+    }
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>Mínimo</td>
+        <td>
+            @try
+            {
+                
+            }
+            catch
+            { 
+                @Html.Raw("-");
+            }
+        </td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>Máximo</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>Promedio</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+</div>

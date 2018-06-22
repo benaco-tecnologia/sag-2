@@ -1,0 +1,414 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    ViewBag.Title = "Libro Banco";    
+    var Saldo = 0;
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    
+    if (@ViewBag.SaldoInicial != null && !@ViewBag.SaldoInicial.Equals("0"))
+    {
+        Saldo = Int32.Parse(@ViewBag.SaldoInicial.ToString());
+    }
+    
+    SAG2.Models.CuentaCorriente CuentaCorriente = (SAG2.Models.CuentaCorriente)@ViewBag.cuentaCorriente;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div id="SAGBox">
+<h2>Libro Banco</h2>
+@using (Html.BeginForm())
+{
+<table border="0" class="sin-hover">
+    <tr>
+        <td>
+            <fieldset style="width: 380px; height: 100px;">
+                <legend>Período</legend>
+                <table class="sin-hover" align="center" cellspacing="0" cellpadding="5">
+                        <tr>
+                        <td>
+                            Mes
+                        </td>
+                        <td>
+                            <select name="Mes" id="Mes">
+                            @for (var i = 0; i < 12; i++)
+                            {
+                                <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1))
+                                                                                {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                            }
+                            </select>
+                        </td>
+                        <td rowspan="2"><input type="submit" value="Ver resultados" style="height:100%" /></td>
+                        <td rowspan="2"><input type="button" name="Imprimir" id="ImprimirLibroBanco" value="Imprimir" style="height:100%" />
+                            <input type="button" name="Imprimir" id="ExcelLibroBanco" value="Excel" style="height:100%" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Año
+                        </td>
+                        <td>
+                            <select name="Periodo" id="Periodo">
+                            @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
+                                                                            {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </td>
+        <td>
+            <fieldset style="width: 300px; height: 100px;">
+                <legend>Cuenta corriente</legend>
+                <table class="sin-hover" align="center" cellspacing="0" cellpadding="5">
+                        <tr>
+                        <td>
+                            Cuenta
+                        </td>
+                        <td>
+                            <input type="text" readonly="readonly" name="NumeroCuenta" id="NumeroCuenta" value="@Html.Raw(@ViewBag.NumeroCuenta)" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Saldo inicial período
+                        </td>
+                        <td>
+                            @if (Saldo == 0)
+                            {
+                            <input type="text" readonly="readonly" name="SaldoInicial" id="SaldoInicial" value="$0" style="text-align: right;" />
+                            }
+                            else
+                            { 
+                            <input type="text" readonly="readonly" name="SaldoInicial" id="SaldoInicial" value="$@Html.Raw(Saldo.ToString("#,##0"))" style="text-align: right;" />
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </td>
+    </tr>
+</table>
+}
+<br />
+@if (Model.Count() == 0)
+{
+    @Html.Raw("No existen registros!");
+}
+else
+{
+    var totalDebe = 0;
+    var totalHaber = 0;
+    var saldoLB = 0;
+<div style="height: 300px; overflow: scroll">
+    <table align="center" style="width: 100%;" id="" cellspacing="3">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Nº doc. </th>
+            <th>Debe</th>
+            <th>Haber</th>
+            <th>Saldo</th>
+            <th>Tipo Comp.</th>
+            <th>Nº Comp.</th>
+            <th>Cuenta</th>
+            <th>Beneficiario</th>
+        </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model)
+    {
+        if (item.Nulo != null && item.Nulo.Equals("S"))
+        {
+            <tr style="text-decoration: line-through;">
+                <td>@item.Fecha.Value.ToShortDateString()</td>
+                <td align="center">@item.Cheque</td>
+                <td align="right">
+                    @if (item.TipoComprobanteID == 2) 
+                    {
+                        @Html.Raw("-");
+                    }
+                    else
+                    {
+                        @Html.Raw("<strong>$" + @item.Monto_Ingresos.ToString("#,##0")+"</strong>");
+                    }
+                </td>
+                <td align="right">
+                    @if (item.TipoComprobanteID != 2) 
+                    {
+                        @Html.Raw("-");
+                    }
+                    else
+                    {
+                        @Html.Raw("<strong>$" + @item.Monto_Egresos.ToString("#,##0")+"</strong>");
+                    }
+                </td>
+                <td align="right"@{
+               if (Saldo >= 0)
+               {
+                    @Html.Raw(" style=\"color: Blue;\"");
+               }
+               else if (Saldo < 0)
+               {
+                    @Html.Raw(" style=\"color: Red;\"");
+               }
+                }>
+                    $@Html.Raw(Saldo.ToString("#,##0"))
+                </td>
+                <td>
+                    @if (item.TipoComprobanteID == 2) 
+                    {
+                        @Html.Raw("Egreso");
+                    }
+                    else if (item.TipoComprobanteID == 1) 
+                    {
+                        @Html.Raw("Ingreso");
+                    } 
+                    else
+                    {
+                        @Html.Raw("Reintegro");
+                    }
+                </td>
+                <td align="center">@item.NumeroComprobante</td>
+                <td align="left">@if (@item.Cuenta != null) { @Html.Raw(utils.cuentaPadre(@item.Cuenta)) }</td>
+                <td>COMPROBANTE NULO</td>
+            </tr>
+        }
+        else
+        {
+            if (item.TipoComprobanteID == 2)
+            {
+                if (item.Nulo != null && item.Nulo.Equals("S"))
+                {
+                    <tr>
+                        <td>@item.Fecha.Value.ToShortDateString()</td>
+                        <td align="center">@item.Cheque</td>
+                        <td align="right">
+                            -
+                        </td>
+                        <td align="right">$0</td>
+                        <td align="right"@{
+                       if (Saldo >= 0)
+                       {
+                            @Html.Raw(" style=\"color: Blue;\"");
+                       }
+                       else if (Saldo < 0)
+                       {
+                            @Html.Raw(" style=\"color: Red;\"");
+                       }
+                        }>
+                        $@Html.Raw(Saldo.ToString("#,##0"))
+                        </td>
+                        <td>Egreso</td>
+                        <td align="center">@Html.Raw(@item.NumeroComprobante.ToString())</td>
+                        <td></td>
+                        <td>COMPROBANTE NULO</td>
+                    </tr>
+                }
+                else
+                {
+                    // Caja Chica
+                    if ((item.FondoFijo != null && item.FondoFijo.Equals("S")))
+                    {
+                        List<SAG2.Models.DetalleEgreso> Detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+                        var detalles = Detalles.GroupBy(d => d.CuentaID).Select(grp => grp.First());
+                        
+                        //var detalles = Detalles.GroupBy(d => d.CuentaID).Select(grp => grp.First());
+                        foreach (var detalle in detalles)
+                        {
+                            <tr>
+                                <td>@item.Fecha.Value.ToShortDateString()</td>
+                                <td align="center">@Html.DisplayFor(modelItem => item.Cheque)</td>
+                                <td align="right">-</td>
+                                <td align="right"><strong>
+                                    $@Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto).ToString("#,##0")
+                                    @{
+                                        Saldo = Saldo - Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto);
+                                        totalHaber = totalHaber + Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto);
+                                    }</strong>
+                                </td>
+                                <td align="right"@{
+                               if (Saldo >= 0)
+                               {
+                                    @Html.Raw(" style=\"color: Blue;\"");
+                               }
+                               else if (Saldo < 0)
+                               {
+                                    @Html.Raw(" style=\"color: Red;\"");
+                               }
+                                }>
+                                    $@Html.Raw(Saldo.ToString("#,##0"))
+                                </td>
+                                <td>
+                                    Egreso
+                                </td>
+                                <td align="center">
+                                    @Html.Raw(@item.NumeroComprobante.ToString())
+                                </td>
+                                <td align="left" style="white-space: nowrap;">@if (@detalle.Cuenta != null)
+                                                                                      { @Html.Raw(utils.cuentaPadre(@detalle.Cuenta)) }</td>
+                                <td align="left">@detalle.Cuenta.NombreLista</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        // Egreso !
+                        //SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+                        List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+                        foreach (var detalle in detalles)
+                        {
+                        <tr>
+                            <td>
+                                @item.Fecha.Value.ToShortDateString()
+                            </td>
+                            <td align="center">
+                                @Html.DisplayFor(modelItem => item.Cheque)
+                            </td>
+                            <td align="right">
+                                -
+                            </td>
+                            <td align="right"><strong>
+                                $@Html.Raw(@detalle.Monto.ToString("#,##0"))
+                                @{
+                                   Saldo = Saldo - detalle.Monto;
+                                   totalHaber = totalHaber + detalle.Monto;
+                                }</strong>
+                            </td>
+                            <td align="right"@{
+                           if (Saldo >= 0)
+                           {
+                                @Html.Raw(" style=\"color: Blue;\"");
+                           }
+                           else if (Saldo < 0)
+                           {
+                                @Html.Raw(" style=\"color: Red;\"");
+                           }
+                            }>
+                                $@Html.Raw(Saldo.ToString("#,##0"))
+                            </td>
+                            <td>
+                                Egreso
+                            </td>
+                            <td align="center">
+                                @Html.Raw(@item.NumeroComprobante.ToString())
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => detalle.Cuenta.NombreLista)
+                            </td>
+                            <td>
+                            @try
+                            {
+                                if (item.Persona != null)
+                                {
+                                    @item.Persona.NombreCompleto.ToUpper()
+                                }
+                                else if (item.Proveedor != null)
+                                {
+                                    @item.Proveedor.Nombre.ToUpper()
+                                }
+                                else
+                                { 
+                                    @Html.Raw(@item.Beneficiario.ToUpper())
+                                }
+                            }
+                            catch (Exception)
+                            {}
+                            </td>
+                        </tr>
+                        }
+                    }
+                }
+            }
+            else
+            {
+            <tr>
+                <td>
+                    @item.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="center">
+                    @Html.DisplayFor(modelItem => item.Cheque)
+                </td>
+                <td align="right"><strong>
+                    $@item.Monto_Ingresos.ToString("#,##0")
+                    @{
+               Saldo = Saldo + item.Monto_Ingresos;
+               totalDebe = totalDebe + item.Monto_Ingresos;
+                    }</strong>
+                </td>
+                <td align="right">
+                    -
+                </td>
+                <td align="right"@{
+               if (Saldo >= 0)
+               {
+                        @Html.Raw(" style=\"color: Blue;\"");
+               }
+               else if (Saldo < 0)
+               {
+                        @Html.Raw(" style=\"color: Red;\"");
+               }
+                    }>
+                    $@Html.Raw(Saldo.ToString("#,##0"))
+                </td>
+                <td>
+                    @if (item.TipoComprobanteID == 1)
+                    { 
+                        @Html.Raw("Ingreso")
+                    }
+                    else if (item.TipoComprobanteID == 3)
+                    { 
+                        @Html.Raw("Reintegro")
+                    }
+                </td>
+                <td align="center">
+                    @Html.Raw(@item.NumeroComprobante.ToString())
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cuenta.NombreLista)
+                </td>
+                <td>      
+                @item.Descripcion.ToUpper()
+                </td>
+            </tr>
+            }
+            saldoLB = Saldo;
+        }
+    }
+    </tbody>
+    </table>
+    </div>
+    <table align="right" style="width: 100%;">
+        <tr>
+            <th>Total Debe <input value="$@totalDebe.ToString("#,##0")" readonly="readonly" style="text-align: right;" /></th>
+            <th>Total Haber <input value="$@totalHaber.ToString("#,##0")" readonly="readonly" style="text-align: right;" /></th>
+            <th>Saldo L.B. <input value="$@saldoLB.ToString("#,##0")" readonly="readonly" style="font-weight:bold; text-align: right;@{
+                                     if (saldoLB >= 0)
+                                     {
+                    @Html.Raw(" color: Blue;");
+                                     }
+                                     else if (saldoLB < 0)
+                                     {
+                    @Html.Raw(" color: Red;");
+                                     }
+                }" /></th>
+        </tr>
+
+    </table>
+}
+</div>

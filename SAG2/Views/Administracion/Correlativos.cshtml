@@ -1,0 +1,115 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+@{
+    ViewBag.Title = "Correlativos";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    SAG2.Classes.Constantes ctes = new SAG2.Classes.Constantes();
+}
+<div class="permisos">
+@using (Html.BeginForm())
+{
+<h2>Correlativos</h2>
+@Html.Raw(@ViewBag.Mensaje)
+<table width="100%">
+    <tr>
+        <th>Proyecto</th>
+        <th width="100px;">Estado</th>
+        <th width="100px;">Ingreso</th>
+        <th width="100px;">Egreso</th>
+        <th width="100px;">Reintegro</th>
+        <th width="100px;">Deudas</th>
+        <th width="100px;">Saldo</th>
+        <th width="100px;">Acciones</th>
+    </tr>
+    @foreach (var Proyecto in Model)
+    {
+        var CuentaCorrienteID = 0;
+        try
+        {
+            CuentaCorrienteID = db.CuentaCorriente.Where(c => c.ProyectoID == Proyecto.ID).Single().ID;
+        }
+        catch (Exception)
+        { }
+    <tr>
+        <td>@Proyecto.NombreLista</td>
+        <td>
+            @if (@Proyecto.estaCerrado)
+            {
+                <img src="../Content/Images/estado_proyecto_cerrado.png" />
+            }
+            else if (@Proyecto.estaEliminado)
+            {
+                <img src="../Content/Images/estado_proyecto_eliminado.png" />
+            }
+            else
+            {
+                <img src="../Content/Images/estado_proyecto_abierto.png" />
+            }
+        </td>
+        @if (!@Proyecto.estaCerrado && !@Proyecto.estaEliminado)
+        {
+            int ingreso = 0;
+            try 
+            {
+                ingreso = db.Movimiento.Where(i => i.TipoComprobanteID == ctes.tipoIngreso && i.ProyectoID == Proyecto.ID).OrderByDescending(i => i.ID).Take(1).Single().NumeroComprobante;
+            }
+            catch (Exception)
+            {}
+
+            int egreso = 0;
+            try
+            {
+                egreso = db.Movimiento.Where(i => i.TipoComprobanteID == ctes.tipoEgreso && i.ProyectoID == Proyecto.ID).OrderByDescending(i => i.ID).Take(1).Single().NumeroComprobante;
+            }
+            catch (Exception)
+            { }
+
+            int reintegro = 0;
+            try
+            {
+                reintegro = db.Movimiento.Where(i => i.TipoComprobanteID == ctes.tipoReintegro && i.ProyectoID == Proyecto.ID).OrderByDescending(i => i.ID).Take(1).Single().NumeroComprobante;
+            }
+            catch (Exception)
+            { }
+
+            int deuda = 0;
+            try
+            {
+                deuda = db.DeudaPendiente.Where(i => i.ProyectoID == Proyecto.ID).OrderByDescending(i => i.ID).Take(1).Single().NumeroComprobante;
+            }
+            catch (Exception)
+            { }
+
+            int monto = 0;
+            try
+            {
+                monto = db.Saldo.Where(i => i.CuentaCorrienteID == CuentaCorrienteID).OrderByDescending(i => i.ID).Take(1).Single().SaldoFinal;
+            }
+            catch (Exception)
+            { }
+
+        <td align="center"><input type="text" style="text-align: right;" value="@ingreso" size="3" class="@Html.Raw("ingreso_" + @Proyecto.ID)" /></td>
+        <td align="center"><input type="text" style="text-align: right;" value="@egreso" size="3" class="@Html.Raw("egreso_" + @Proyecto.ID)" /></td>
+        <td align="center"><input type="text" style="text-align: right;" value="@reintegro" size="3" class="@Html.Raw("reintegro_" + @Proyecto.ID)" /></td>
+        <td align="center"><input type="text" style="text-align: right;" value="@deuda" size="3" class="@Html.Raw("deuda_" + @Proyecto.ID)" /></td>
+        <td align="center"><input type="text" style="text-align: right;" value="@monto" size="7" class="@Html.Raw("monto_" + @Proyecto.ID)" /></td>
+        <td>
+            <input type="button" value="Cerrar" class="proyecto_cerrar" proyecto="@Proyecto.ID" />
+            <input type="button" value="Eliminar" class="proyecto_eliminar" proyecto="@Proyecto.ID" />
+            <input type="button" value="Reiniciar" class="proyecto_reiniciar" proyecto="@Proyecto.ID" />
+            <input type="button" value="Reiniciar Saldo" class="proyecto_saldo" proyecto="@Proyecto.ID" />
+        </td>
+        }
+        else
+        { 
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        }
+    </tr>
+    }
+</table>
+}
+</div>

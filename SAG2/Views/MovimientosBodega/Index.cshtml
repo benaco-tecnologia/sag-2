@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Movimientos de mercadería e insumos";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div id="SAGBox" class="control_bodega">
+    <h2>Control de bodega</h2>
+@using (Html.BeginForm())
+{
+    @Html.Hidden("MovimientosBodegaID")
+    <table cellspacing="0" cellpadding="5" style="width: 100%;">
+        <tr>
+            <td valign="top" style="width: 190px;">
+                <fieldset style="height: 83px;">
+                    <legend>Período</legend>
+                    <table cellspacing="0" cellpadding="5" style="width: 95%;" align="center">
+                        <tr>
+                            <td>Mes</td>
+                            <td>
+                                <select name="PeriodoMes" id="PeriodoMes">
+                                @for (var i = 0; i < 12; i++)
+                                {
+                                    <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.mes.Equals((i + 1).ToString())) { @Html.Raw("selected=\"selected\"");}>@Html.Raw(@Meses[@i])</option>
+                                }
+                                </select>
+                            </td>
+                            <td rowspan="2" valign="middle" style="width: 36px;">
+                                <input type="button" name="BodegaPeriodo" id="BodegaPeriodo" value="Ver" style="height: 100%;" />
+                                <input type="button" name="ImprimirBodega" id="ImprimirBodega" value="Imprimir" style="height: 100%;" />
+                                <input type="button" name="ExcelBodega" id="ExcelBodega" value="Excel" style="height: 100%;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Año</td>
+                            <td>
+                                <select name="PeriodoAnio" id="PeriodoAnio">
+                                @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                                {
+                                    <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo.Equals((i).ToString()))
+                                                                               { @Html.Raw("selected=\"selected\"");
+                                                                               }>@Html.Raw((@i).ToString())</option>
+                                }
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </td>
+            <td style="width: 90px;" valign="top">
+                <fieldset style="width: 90px; height: 83px;">
+                    <legend>Movimiento</legend>
+                    <table cellspacing="0" cellpadding="5" style="width: 95%;" align="center">
+                        <tr>
+                            <td><label><input type="radio" name="tipo_movimiento" id="tipo_movimiento_e" value="E" checked="checked" /> Entrada</label></td>
+                        </tr>
+                        <tr>
+                            <td><label><input type="radio" name="tipo_movimiento" id="tipo_movimiento_s" value="S" /> Salida</label></td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </td>
+            <td valign="top">
+                <fieldset>
+                    <legend>Documento de respaldo</legend>
+                    <table cellspacing="0" cellpadding="5" style="width: 95%;" align="center">
+                        <tr>
+                            <td>Tipo</td>
+                            <td>@Html.DropDownList("DocumentoID", null, new { style = "width: 290px;" })</td>
+                        </tr>
+                        <tr>
+                            <td>Nº Doc.</td>
+                            <td><input type="text" name="NroDocumento" id="NroDocumento" /></td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <fieldset>
+                    <legend>Artículo</legend>
+                    <table cellspacing="0" cellpadding="5" style="width: 99%;" align="center">
+                        <tr>
+                            <td style="width: 100px;">Fecha</td>
+                            <td>Artículo</td>
+                            <td style="width: 50px;">Cantidad</td>
+                            <td rowspan="3" valign="middle" style="width: 50px; text-align: center;"><input type="button" name="BodegaMovimiento" id="BodegaMovimiento" value="Guardar" style="height: 100%;" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" name="Fecha" id="Fecha" class="calendario" value="@DateTime.Now.ToShortDateString()" readonly="readonly" maxlength="10" size="10" /></td>
+                            <td>@Html.DropDownList("ArticuloID", null, new { style = "width: 100%;" })</td>
+                            <td><input type="text" name="Cantidad" id="Cantidad" size="3" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Observaciones&nbsp;&nbsp;<input type="text" name="Observaciones" id="Observaciones" style="width: 610px;" /></td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <fieldset style="height: 18px;">
+                    <img src="@Url.Content("~/Content/Images/Empty.png")" id="LimpiarFormulario" width="20" height="20" style="cursor: pointer;" title="Limpiar formulario" />
+                    <img src="@Url.Content("~/Content/Images/Delete.png")" id="BorrarMovimientoBodega" width="20" height="20" style="cursor: pointer;" title="Borrar movimiento" />
+                </fieldset>
+            </td>
+        </tr>
+    </table>
+    <iframe src="/SAG2/MovimientosBodega/ListarMovimientos" width="796px" height="150px" id="iframeBodega" frameborder="0" scrolling="auto" style="margin-top: 3px; margin-left: 3px;"></iframe>
+}
+</div>

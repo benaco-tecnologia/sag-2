@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <title>SAG2 / @ViewBag.Title</title>
+    <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript" language="javascript"></script>
+    <link rel="stylesheet" href="@Url.Content("~/Content/style.css")" type="text/css" media="screen, projection"/>
+	<!--[if lte IE 7]>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/ie.css")" media="screen" />
+    <![endif]-->
+	<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $("#elegirProyecto").click(function () {
+                if ($("#Proyecto").val() == "-1") {
+                    $('body').css('opacity', '0.25');
+                    alert("Debe seleccionar un proyecto.");
+                    $('body').css('opacity', '1');
+                    return false;
+                }
+                return true;
+            });
+
+            $(".boton-login").click(function () {
+                if ($("#NombreUsuario").val() == '' || $("#Password").val() == '') {
+                    $('body').css('opacity', '0.25');
+                    alert("Debe ingresar Nombre de Usuario y Contraseña.");
+                    $('body').css('opacity', '1');
+                    $("#NombreUsuario").focus();
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+
+            $("#NombreUsuario").focus();
+        });
+	</script>
+</head>
+<body>
+<div class="top">&nbsp;</div>
+<div class="contenedor">
+    <div class="body">
+        @RenderBody()
+    </div>
+</div>
+<div class="pie">
+    SAG2 / Codeni 2013&nbsp;&nbsp;
+</div>
+</body>
+</html>

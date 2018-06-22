@@ -1,0 +1,30 @@
+﻿@{
+    Layout = "~/Views/Shared/Entrada.cshtml";
+    ViewBag.Title = "Ingreso de usuario";
+}
+<div id="SAGBox" class="login">
+<img src="@Url.Content("~/Content/Images/SAG2.png")" alt="CodeniSAG2" />
+<br />
+<br />
+@Html.Raw(ViewBag.Mensaje)
+@using (Html.BeginForm())
+{
+     <fieldset>
+        <div class="editor-label">
+            @Html.Label("Nombre de usuario")
+        </div>
+        <div class="editor-field">
+            @Html.Editor("NombreUsuario")
+        </div>
+        <div class="editor-label">
+            @Html.Label("Contraseña")
+        </div>
+        <div class="editor-field">
+            @Html.Password("Password")
+        </div>
+        <p>
+            <input type="submit" value="Ingresar a SAG2" class="boton boton-login" />
+        </p>
+    </fieldset>
+}
+</div>

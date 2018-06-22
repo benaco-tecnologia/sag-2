@@ -1,0 +1,40 @@
+﻿@model IEnumerable<SAG2.Models.CuentaCorriente>
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Cuentas corrientes";
+}
+<div class="top" style="height: 28px;">Buscar: <input type="text" id="busqueda" />&nbsp;&nbsp;</div>
+ <div id="contenido_popup">
+        <table cellpadding="5" border="1" align="center">
+    <tr>
+        <th>
+            Nº Cuenta
+        </th>
+        <th>
+            Banco
+        </th>
+        <th>
+            Sucursal
+        </th>
+        <th class="controles"></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Numero)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Banco.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Sucursal)
+        </td>    
+        <td>
+            <a href="@Url.Action("Edit", "CuentaCorriente", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+        </table>
+    </div>

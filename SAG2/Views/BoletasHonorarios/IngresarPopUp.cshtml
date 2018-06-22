@@ -1,0 +1,88 @@
+﻿@model SAG2.Models.BoletaHonorario
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+}
+<div class="top" style="height: 25px;">Ingresar Boleta de Honorarios&nbsp;&nbsp;
+<a href="/SAG2/BoletasHonorarios/ListadoEgreso/?personalID=@ViewBag.PersonaID">
+    <img src="@Url.Content("~/Content/Images/Buscar2.png")" alt="Buscar" title="Buscar" style="vertical-align: middle;" />
+</a>
+&nbsp;&nbsp;
+</div>
+<div id="contenido_popup">
+<fieldset>
+        <legend>Ingresar Boleta de Honorarios</legend><br />
+@using (Html.BeginForm())
+{
+    @Html.Hidden("Porcentaje", 10)
+    <input id="PersonaID" name="PersonaID" type="hidden" value="@ViewBag.PersonalID" />
+    <input id="ProveedorID" name="ProveedorID" type="hidden" value="@ViewBag.ProveedorID" />
+    <input id="Rut" name="Rut" type="hidden" value="@ViewBag.Rut" />
+    <input id="DV" name="DV" type="hidden" value="@ViewBag.DV" />
+    <input id="Beneficiario" name="Beneficiario" type="hidden" value="@ViewBag.Beneficiario" />
+    <div class="editor-label expandido">
+            @Html.Label("Persona")
+        </div>
+        <div class="editor-field">
+            <input type="text" value="@ViewBag.NombreLista" size="50" />
+        </div>
+
+        <div class="editor-label expandido">
+            @Html.LabelFor(model => model.NroBoleta)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.NroBoleta)
+        </div>
+
+        <div class="editor-label expandido">
+            @Html.LabelFor(model => model.Fecha)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Fecha, new { @Value = DateTime.Now.ToShortDateString(), @class = "calendario" })
+        </div>
+        
+        <div class="editor-label expandido">
+            @Html.LabelFor(model => model.Bruto)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Bruto)
+        </div>
+        <div class="editor-label expandido">
+            @Html.LabelFor(model => model.Retencion)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Retencion, new { @readonly = "readonly" })
+        </div>
+        
+        <div class="editor-label expandido">
+            @Html.LabelFor(model => model.Neto)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Neto)
+        </div>
+        <div class="editor-label expandido">
+            @Html.LabelFor(model => model.Concepto)
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor(model => model.Concepto, new { @cols = "57", @rows = "7" })
+        </div>
+
+        <div class="editor-label expandido">
+            @Html.LabelFor(model => model.Electronica)
+        </div>
+        <div class="editor-field">
+            <input type="checkbox" name="Electronica" id="Electronica" value="1" />
+        </div>
+
+        <div class="editor-label expandido">
+            @Html.LabelFor(model => model.Nula)
+        </div>
+        <div class="editor-field">
+            <input type="checkbox" name="Nula" id="Nula" value="1" />
+        </div>
+
+        <p>
+            <input type="submit" value="Guardar" class="guardar-boleta-pop-up" />
+        </p>
+}
+</fieldset>
+</div>

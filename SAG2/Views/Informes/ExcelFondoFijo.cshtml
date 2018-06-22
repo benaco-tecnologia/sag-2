@@ -1,0 +1,57 @@
+﻿@model IEnumerable<SAG2.Models.FondoFijo>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Fondo Fijo";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.FondoFijo.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+}
+<style type="text/css" media="all">
+body 
+{
+    font-family: Arial;    
+}
+
+th
+{
+    font-weight: bold;    
+}
+
+td, th
+{
+    white-space: nowrap;
+    font-size: 12px;
+}
+</style>
+<h2>@ViewBag.Title</h2>
+<table cellpadding="5" border="1" style="width: 100%;">
+            <tr>
+                <th>@System.Web.HttpUtility.UrlDecode("N° Doc.")</th>
+                <th>Fecha</th>
+                <th>Cuenta</th>
+                <th>Monto $</th>
+                <th>Glosa</th>
+            </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td align="center">
+                    @item.NumeroDocumento.ToString()
+                </td>
+                <td>
+                    @item.Fecha.ToShortDateString()
+                </td>
+                <td>
+                    @item.Cuenta.NombreLista
+                </td>
+                <td>
+                    $@item.Monto.ToString("#,##0")
+                </td>
+                <td>
+                    @System.Web.HttpUtility.UrlDecode(item.Glosa)
+                </td>
+            </tr>
+        }
+        </table>

@@ -1,0 +1,102 @@
+﻿@{
+    ViewBag.Title = "Propiedades del sistema";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div class="inicio">
+<br />
+<br />
+@Html.Raw(ViewBag.Mensaje)
+@using (Html.BeginForm())
+{
+    var ProyectoSelected = (SAG2.Models.Proyecto)Session["Proyecto"];
+ <fieldset>
+    <legend>Información del Proyecto</legend>
+    <div class="editor-label expandido">
+       Nombre
+    </div>
+    <div class="editor-field">
+        <select name="Proyecto" id="Proyecto">
+            <option> - Seleccione proyecto</option>
+            @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+            { 
+            <option value="@Proyecto.ID" @if (@Proyecto.ID.Equals(ProyectoSelected.ID)) { @Html.Raw("selected=\"selected\"") }>@Proyecto.NombreEstado</option>
+            }
+        </select>
+    </div><br />
+    </fieldset><br />
+<br />
+    <fieldset>
+    <legend>Período activo</legend>
+    <div class="editor-label expandido">
+        @Html.Label("Año")
+    </div>
+    <div class="editor-field">
+        <input name="PeriodoAnio" value="@Html.Raw(Session["Periodo"].ToString())" readonly="readonly" size="10" />
+    </div>
+    <div class="editor-label expandido">
+        @Html.Label("Mes")
+    </div>
+    <div class="editor-field">
+        <input name="PeriodoMes" value="@Html.Raw(@Meses[((int)Session["Mes"]) - 1])" readonly="readonly" size="10" />
+    </div><br />
+</fieldset>
+<br />
+<br />
+<fieldset>
+    <legend>Correlativos de comprobantes (Proy. @ViewBag.Proyecto)</legend>
+    <table style="width: 100%;">
+        <tr>
+            <td style="width: 25%;">
+                INGRESOS
+            </td>
+            <td style="width: 25%;" align="right">
+                <strong>@ViewBag.NroIngresos</strong>
+            </td>
+            <td>
+                EGRESOS
+            </td>
+            <td style="width: 25%;" align="right">
+                <strong>@ViewBag.NroEgresos</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                REINTEGROS
+            </td>
+            <td align="right">
+                <strong>@ViewBag.NroReintegros</strong>
+            </td>
+            <td>
+                DEUDAS PENDIENTES
+            </td>
+            <td align="right">
+                <strong>@ViewBag.NroDeudas</strong>
+            </td>
+        </tr>
+    </table><br />
+</fieldset>
+<br />
+<br />
+<fieldset>
+    <p style="margin:0;">
+        <input type="submit" value="Guardar cambios" class="boton" />
+    </p>
+</fieldset>
+    <br />
+<br />
+}
+</div>

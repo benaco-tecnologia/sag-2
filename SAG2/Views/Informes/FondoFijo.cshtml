@@ -1,0 +1,116 @@
+﻿@model IEnumerable<SAG2.Models.FondoFijo>
+@{
+    ViewBag.Title = "Fondo fijo";
+    var total = 0;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div id="SAGBox">
+    <h2>Informe de Caja Chica</h2>
+@using (Html.BeginForm())
+{
+    if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+    {
+    <table border="0" class="sin-hover">
+        <tr>
+            <td>
+                <fieldset style="width:380px;">
+                    <legend>Período</legend>
+                    <table class="sin-hover" align="center" cellspacing="0" cellpadding="5">
+                        <tr>
+                        <td>
+                            Mes
+                        </td>
+                        <td>
+                            <select name="Mes" id="Mes">
+                            @for (var i = 0; i < 12; i++)
+                            {
+                                <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.Mes == (i + 1))
+                                                                              {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                            }
+                            </select>
+                        </td>
+                        <td rowspan="2">
+                            <input type="submit" value="Ver resultados" style="height:100%" class="boton" />
+                        </td>
+                        <td rowspan="2" valign="middle"><input type="button" value="Imprimir" class="imprimirBotonMes boton" style="height: 100%;" /></td>
+                        <td rowspan="2" valign="middle"><input type="button" value="Excel" tipo="FondoFijo" class="excelBotonPeriodo boton" style="height: 100%;" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Año
+                        </td>
+                        <td>
+                            <select name="Periodo" id="Periodo">
+                            @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i)
+                                                                           {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                </fieldset>
+            </td>
+        </tr>
+    </table>
+    }
+}
+    <p>&nbsp;</p>
+    <div style="height: 300px; overflow: scroll;">
+        <table cellpadding="5" border="1" style="width: 100%;">
+            <tr>
+                <th>Nº Doc.</th>
+                <th>Fecha</th>
+                <th>Cuenta</th>
+                <th>Monto $</th>
+                <th>Glosa</th>
+            </tr>
+        @foreach (var item in Model)
+        {
+            total = total + item.Monto;
+            <tr>
+                <td align="center">
+                    @item.NumeroDocumento.ToString()
+                </td>
+                <td>
+                    @item.Fecha.ToShortDateString()
+                </td>
+                <td>
+                    @item.Cuenta.NombreLista
+                </td>
+                <td>
+                    $@item.Monto.ToString("#,##0")
+                </td>
+                <td>
+                    @item.Glosa
+                </td>
+            </tr>
+        }
+        </table>
+    </div>
+    <table align="right" style="width: 100%;">
+        <tr>
+            <th align="left" width="20" class="sin-hover">
+                <a href="../Imprimir/InformeFondoFijo?Mes=@Html.Raw(@ViewBag.Mes.ToString())&Periodo=@Html.Raw(@ViewBag.Periodo.ToString())" class="imprimirInformeMes">
+                    <img src="@Url.Content("~/Content/Images/Printer.png")" width="20" height="20" title="Imprimir Informe" border="0" />
+                </a>
+            </th>
+            <th align="right">Total Caja Chica <input value="$@total.ToString("#,###")" readonly="readonly" style="text-align: right;" /></th>
+        </tr>
+    </table>
+</div>

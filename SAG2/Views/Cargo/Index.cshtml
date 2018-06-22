@@ -1,0 +1,29 @@
+﻿@model IEnumerable<SAG2.Models.Cargo>
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Cargos";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+}
+}
+<div class="top" style="height: 28px;">Buscar: <input type="text" id="busqueda" />&nbsp;&nbsp;</div>
+ <div id="contenido_popup">
+        <table cellpadding="5" border="1" align="center">
+            <tr>
+                <th>
+                    Nombre
+                </th>
+                <th class="controles"></th>
+            </tr>
+@foreach (var item in Model)
+{
+            <tr>
+                <td>
+                    @Html.Raw(utils.ToTitle(@item.Nombre))
+                </td>
+                <td>
+            <a href="@Url.Action("Edit", "Cargo", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" /></a> 
+        </td>
+            </tr>
+        }
+        </table>
+    </div>

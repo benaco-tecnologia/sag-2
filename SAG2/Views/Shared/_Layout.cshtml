@@ -1,0 +1,401 @@
+﻿@{
+	SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario) Session["Usuario"];
+	SAG2.Models.Proyecto Proyecto = (SAG2.Models.Proyecto) Session["Proyecto"];
+	var FondoFijoUtilizado = @ViewBag.FondoFijoUtilizado;
+    if (Session["FondoFijoUtilizado"] != null)
+    {
+        FondoFijoUtilizado = float.Parse(Session["FondoFijoUtilizado"].ToString());
+    }
+    var autorizacionesPendientes = @ViewBag.AutorizacionesPendientes;
+    if (Session["AutorizacionesPendientes"] != null)
+    {
+        autorizacionesPendientes = Int32.Parse(Session["AutorizacionesPendientes"].ToString());
+    }
+    
+    var respuestaAuditoria = @ViewBag.RespuestaAuditoria;
+    if (Session["RespuestaAuditoria"] != null)
+    {
+        respuestaAuditoria = Int32.Parse(Session["RespuestaAuditoria"].ToString());
+    }
+
+    var alertas = @ViewBag.Alertas;
+    if (Session["Alertas"] != null)
+    {
+        alertas = Session["Alertas"].ToString();
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<title>SAG2 / @ViewBag.Title</title>
+	<script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/modernizr-1.7.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery-ui-1.8.11.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.ui.datepicker-es.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.Rut.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<link rel="stylesheet" href="@Url.Content("~/Content/style.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="@Url.Content("~/Content/jquery-ui-1.8.18.custom.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection" />
+	<!--[if lte IE 7]>
+		<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/ie.css?" + @DateTime.Now.Ticks)" media="screen" />
+	<![endif]-->
+	<link href="@Url.Content("~/Content/Site.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" media="screen" />
+    <link href="@Url.Content("~/Content/Print.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" media="print" />
+	<script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/jquery.dropdownPlain.js?" + @DateTime.Now.Ticks)"></script>
+	<script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/jquery.chromatable.js?" + @DateTime.Now.Ticks)"></script>	
+	<script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/funciones.js?" + @DateTime.Now.Ticks)"></script>
+	<script type="text/javascript" language="javascript">
+		@Html.Raw(@ViewBag.Script)
+	</script>
+    <style media="print" type="text/css">
+        .no-imprimir 
+        {
+            display:none;
+        }
+    </style>
+</head>
+<body>
+<div class="top">&nbsp;</div>
+	<div class="menu">
+		<ul class="menu dropdown">
+			<li><a href="javascript:void();">Herramientas</a>
+				<ul>
+					<li><a href="/SAG2/Home">Página de inicio</a></li>
+					<li><a href="/SAG2/Herramientas/Propiedades/">Propiedades del sistema</a></li>
+					<li><a href="/SAG2/Herramientas/CambioDeContrasena/">Cambio de contraseña</a></li>
+					<!--<li><a href="/SAG2">Notas</a></li>-->
+                    <li><a href="/SAG2/PreguntasFrecuentes/">Preguntas Frecuentes</a></li>
+					<li><a href="/SAG2/Content/Ayuda/guia.html" onclick="window.open(this.href,'ManualAyuda','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes'); return false;">Manual de Ayuda</a></li>
+					<li><a href="/SAG2/Login/Logout">Salir</a></li>
+				</ul>
+			</li>
+			<li><a href="javascript:void();">Mantenedores</a>
+				<ul>
+					<li><a href="javascript:void();">Bodega</a>
+						<ul>
+							<li><a href="/SAG2/Articulos/Create">Artículos</a></li>
+							<li><a href="/SAG2/UnidadesMedidas/Create">Unidades de medida</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:void();">Personal</a>
+						<ul>
+							<li><a href="/SAG2/Personal/Create">Maestro personal</a></li>
+							@if (!Usuario.esUsuario)
+							{
+								<li><a href="/SAG2/Profesion/Create">Profesión</a></li>
+								<li><a href="/SAG2/Cargo/Create">Cargos</a></li>
+							}
+							<!--<li><a href="/SAG2/Especializacion/Create">Especialidades</a></li>-->
+							@if (!Usuario.esUsuario)
+							{
+							<li><a href="/SAG2/Rol/Create">Asignar roles</a></li>
+							}
+						</ul>
+					</li>
+					<li><a href="javascript:void();">Bancos</a>
+						<ul>
+							@if (!Usuario.esUsuario)
+							{
+								<li><a href="/SAG2/Banco/Create">Maestro bancos</a></li>
+							}
+							<li><a href="/SAG2/CuentaCorriente/Create">Ctas. Ctes.</a></li>
+						</ul>
+					</li>
+                    <li><a href="javascript:void();">Inventario</a>
+						<ul>
+							<li><a href="/SAG2/Especie/Create">Tipos de Especie</a></li>
+                            <li><a href="/SAG2/Dependencias/Create">Dependencias</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:void();">Conceptos</a>
+						<ul>
+							@if (!Usuario.esUsuario)
+							{
+							<li><a href="/SAG2/TipoImputacion/Create">Imputación</a></li>
+							<li><a href="/SAG2/TipoOrigenAdquisicion/Create">Origen de adquisición</a></li>
+							}
+							<!--<li><a href="/SAG2/TipoAsistenciaPersonal/Create">Asistencia personal</a></li>-->
+                            <!--<li><a href="/SAG2/Especie/Create">Especie</a></li>-->
+							<!--<li><a href="/SAG2/TipoBajaInventario/Create">Bajas</a></li>-->
+							@if (!Usuario.esUsuario)
+							{
+							<li><a href="/SAG2/TipoPersonal/Create">Tipo de personal</a></li>
+							<li><a href="/SAG2/TiposProyectos/Create">Tipo de proyectos</a></li>
+							<li><a href="/SAG2/LineasAtencion/Create">Líneas de acción</a></li>
+							<li><a href="/SAG2/Servicios/Create">Servicios</a></li>
+							<li><a href="/SAG2/Documento/Create">Documentos</a></li>
+							<li><a href="/SAG2/Comuna/Create">Comunas</a></li>
+							<li><a href="/SAG2/Region/Create">Regiones</a></li>
+							<li><a href="/SAG2/Pais/Create">Países</a></li>
+							}
+						</ul>
+					</li>
+					@if (!Usuario.esUsuario)
+					{
+					<li><a href="/SAG2/Cuentas/Create">Cuentas</a></li>
+					}
+					<li><a href="javascript:void();">Proyectos</a>
+						<ul>
+							<li><a href="/SAG2/Proyectos/Create">Proyectos</a></li>
+							<li><a href="/SAG2/Contratos/Create">Contratos</a></li>
+						</ul>
+					</li>
+					<li><a href="/SAG2/Proveedores/Create">Proveedores</a></li>
+				</ul>
+			</li>
+			<!--
+			<li><a href="javascript:void();">Procesos</a>
+				<ul>
+					<li><a href="/SAG2/Procesos/AperturaMes/">Apertura de mes</a></li>
+					<li><a href="/SAG2/Procesos/CierreMes/">Cierre de mes</a></li>
+					<li><a href="/SAG2/Saldo/Create/">Actualización de saldos</a></li>
+				</ul>
+			</li>
+			-->
+			@if (DateTime.Now.Year > Proyecto.PeriodoInicio || (DateTime.Now.Month >= Proyecto.MesInicio && DateTime.Now.Year >= Proyecto.PeriodoInicio) || Proyecto.MesInicio == null)
+			{
+				// Si el proyecto no se ha iniciado no se pueden igresar movimientos
+			<li><a href="javascript:void();" id="MenuRendicion">Rendición de cuentas</a>
+				<ul>
+                    @if (!Proyecto.estaCerrado)
+                    {
+					<li><a href="/SAG2/Ingresos/Create">Ingresos</a></li>
+					<li><a href="/SAG2/Egresos/Create">Egresos</a></li>
+					<li><a href="/SAG2/Reintegros/Create">Reintegros</a></li>
+					<li><a href="/SAG2/DeudasPendientes/Create">Deudas pendientes</a></li>
+					<li><a href="/SAG2/CajaChica/Create">Caja chica</a></li>
+					<li><a href="/SAG2/DepositoPlazo/Create">Depósitos a plazos</a></li>
+					<li><a href="/SAG2/BoletasHonorarios/Create">Honorarios (Mantención)</a></li>
+                    }
+					<li><a href="/SAG2/Informes/RegistroSemanalPago">Reg. semanal de pagos</a></li>
+					<li><a href="javascript:void();">Rendición de cuentas</a>
+						<ul>
+							<li><a href="/SAG2/Rendicion/Codeni">Carátula Actual</a></li>
+                            @if (!Proyecto.estaCerrado)
+                            {   
+							<li><a href="/SAG2/Rendicion/">Generar Rendición</a></li>
+                            }
+                            <li><a href="/SAG2/Rendicion/ListadoRendiciones">Rendiciones Anteriores</a></li>
+                            @if (!Usuario.esUsuario)
+					        {
+                            <li><a href="/SAG2/SenaInfo">Archivo SenaInfo</a></li>   
+                            }
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li><a href="javascript:void();">Control interno</a>
+				<ul>
+					<li><a href="javascript:void();">Banco</a>
+						<ul>
+							<li><a href="/SAG2/Banco/Libro">Libro banco</a></li>
+							<li><a href="/SAG2/Banco/Conciliacion">Conciliación bancaria</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:void();">Bodega</a>
+						<ul>
+							<li><a href="/SAG2/MovimientosBodega">Movimientos</a></li>
+							<li><a href="/SAG2/Bodega/Saldos">Saldos</a></li>
+						</ul>
+					</li>
+					@if (!Usuario.esUsuario)
+					{
+					<li><a href="javascript:void();">Inventario</a>
+						<ul>
+							 <li><a href="/SAG2/Inventario/ListadoAltas">Altas</a></li>
+							 <li><a href="/SAG2/Inventario/ListadoBajas">Bajas</a></li>
+							 <li><a href="/SAG2/FondoFijo">Traspasos</a></li>
+							 <li><a href="/SAG2/Inventario/Dependencias">Hojas de Inventario</a></li>
+							 <li><a href="/SAG2/Inventario/InventarioGeneral">Inventario General</a></li>
+						</ul>
+					</li>
+					}
+					<li><a href="javascript:void();">Presupuesto</a>
+						<ul>
+                        @if (!Proyecto.estaCerrado)
+                        {
+							<li><a href="/SAG2/Presupuesto/Formulacion">Formulación</a></li>
+                        }
+							<li><a href="/SAG2/Presupuesto/Control">Control</a></li>
+                             
+                            @if (!Usuario.esUsuario)
+                            {
+                                <li><a href="/SAG2/Presupuesto/Balance">Balance</a></li>
+                            }
+                            @if (Usuario.esAdministrador)
+                            {
+                                <li><a href="/SAG2/Presupuesto/LineaProteccion">Línea Protección</a></li>
+                                <li><a href="/SAG2/Presupuesto/LineaResponsabilidad">Línea Responsabilidad</a></li>
+                                <!--<li><a href="/SAG2/Presupuesto/Graficos">Gráficos</a></li>-->
+                            }
+						</ul>
+					</li>
+					@if (Usuario.esAdministrador)
+     {
+					<li><a href="/SAG2/Control/Indicadores">Indicadores de gestión</a>
+						<ul>
+							<li><a href="/SAG2/Control/Indicadores">Indicadores de gestión</a></li>
+							<li><a href="/SAG2/Control/Estandares">Estándares</a></li>
+						</ul>
+					</li>
+     }
+                    @if (!Usuario.esUsuario)
+                    {
+					<li><a href="/SAG2/Control/Intervenciones">Intervenciones por Proy.</a></li>
+                    }
+				</ul>
+			</li>
+			<li><a href="javascript:void();">Informes</a>
+				<ul>
+					<li><a href="/SAG2/Informes/Ingresos">Ingresos</a></li>
+					<li><a href="/SAG2/Informes/Egresos">Egresos</a></li>
+					<li><a href="/SAG2/Informes/Reintegros">Reintegros</a></li>
+					<li><a href="/SAG2/Informes/DeudasPendientes">Deudas pendientes</a></li>
+					<li><a href="/SAG2/Informes/FondoFijo">Caja chica</a></li>
+					<li><a href="/SAG2/Informes/Honorarios">Honorarios</a></li>
+					@if (!Usuario.esUsuario)
+     {
+					<li><a href="/SAG2/BoletasHonorarios/Reporte">Reporte Honorarios</a></li>
+     }
+				</ul>
+			</li>
+            }
+			@if (!Usuario.esUsuario)
+   {
+			<li><a href="javascript:void();">Supervisores</a>
+				<ul>
+				<li><a href="javascript:void();">Informe de Auditoría</a>
+						<ul>
+							<li><a href="/SAG2/ProgramaAnualAuditorias/">Programa Anual</a></li>
+							<li><a href="/SAG2/Auditorias/PlandeTrabajo">Plan de Trabajo</a></li>
+							<!--<li><a href="/SAG2/Auditorias/Informe">Informe de Auditoría</a></li>-->
+							<li><a href="javascript:void();">Conceptos</a>
+								<ul>
+									<li><a href="/SAG2/AuditoriasObjetivos/Create">Objetivos</a>
+									<li><a href="/SAG2/AuditoriasDocumentos/Create">Documentos</a>
+									<li><a href="/SAG2/AuditoriasMetodologias/Create">Metodología</a>
+
+								</ul>
+							</li>
+							<li><a href="javascript:void();">Reportes</a>
+								<ul>
+									<!--<li><a href="/SAG2/Auditorias/ReporteIndividual">Reporte Individual</a>-->
+                                    <li><a href="/SAG2/Auditorias/ReporteGrupal">Reporte Grupal Auditora</a>
+                                    <li><a href="/SAG2/Auditorias/ReporteGeneral">Reporte General Auditora</a>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li><a href="javascript:void();">Autorizaciones</a>
+						<ul>
+							<li><a href="/SAG2/Autorizaciones/Pendientes">Autorizaciones pendientes</a></li>
+							<li><a href="/SAG2/Autorizaciones/Opciones">Opciones</a></li>
+						</ul>
+					</li>
+                    <li><a href="/SAG2/Logs">Registro de Movimientos</a></li>
+				</ul>
+			</li>
+   }
+			@if (Usuario.esAdministrador)
+   {
+			<li><a href="javascript:void();">Administración</a>
+				<ul>
+					<li><a href="/SAG2/Usuarios/Create">Maestro de usuarios</a></li>                    
+					<li><a href="/SAG2/Secciones/Create">Secciones</a></li>
+					<li><a href="/SAG2/Permisos">Permisos</a></li>
+                    <li><a href="/SAG2/Administracion/Correlativos">Correlativos</a></li>
+                    <li><a href="/SAG2/Administracion/Cierres">Cierre Períodos</a></li>
+                    <li><a href="/SAG2/Banco/ConciliacionMasiva">Conciliación Masiva</a></li>
+                    <!--<li><a href="/SAG2/Administracion/CambiarPeriodo">Cambiar Períodos</a></li>-->
+				</ul>
+			</li>
+   }
+			@if (!Usuario.esAdministrador)
+   {
+			<li><a href="/SAG2/Home">Inicio</a></li>
+   }
+            <li><a href="http://186.103.136.42/entrada" target="_blank">Intranet</a></li>
+		</ul>
+	</div>
+    
+	<div class="contenedor">
+            @if (Proyecto.estaCerrado)
+            {
+                <div class="warning" style="z-index:0; top: 20px; height: 16px; width:100%; text-align: center; padding: 5px 0; margin-bottom: 0; position: fixed;">Este Proyecto se encuentra CERRADO, algunas opciones del menú no están disponibles.</div>
+            }
+		<div class="body">
+			@RenderBody()
+		</div>
+	</div>
+	<div class="pie">
+		<div class="alertas" id="alertas">
+			&nbsp;
+			@{if (FondoFijoUtilizado >= 0)
+     {
+				@Html.Raw("<span style=\"color: ");
+                                      var ff = FondoFijoUtilizado;
+                                      if (ff <= 50)
+                                      {
+					@Html.Raw("Green;\">");
+                                      }
+                                      else if (ff < 75)
+                                      {
+					@Html.Raw("Yellow;\">");
+                                      }
+                                      else
+                                      {
+				@Html.Raw("Red;\">");
+                                      }
+				
+				@Html.Raw("Caja Chica utilizada ");
+                                      if (ff < 1)
+                                      {
+					@Html.Raw("0" + FondoFijoUtilizado.ToString("##.#") + "%");
+                                      }
+                                      else
+                                      {
+					@Html.Raw(FondoFijoUtilizado.ToString("#0.#") + "%");
+                                      }
+				@Html.Raw("</span>");
+     }
+			}
+		</div>
+		@Session["InformacionPie"].ToString()&nbsp;&nbsp;
+	</div>
+    @if (!Usuario.esUsuario && alertas.Equals("1") && (autorizacionesPendientes > 0 || respuestaAuditoria > 0))
+    {
+        <div class="aviso no-imprimir"> 
+        @if (autorizacionesPendientes > 0)
+        {
+            if (autorizacionesPendientes == 1)
+            {
+                <a href="/SAG2/Autorizaciones/Pendientes" style="display: block;">Hay @autorizacionesPendientes autorización pendiente.</a>
+            }
+            else
+            { 
+                <a href="/SAG2/Autorizaciones/Pendientes" style="display: block;">Hay @autorizacionesPendientes autorizaciones pendientes.</a>
+            }
+            <hr align="center" />
+        }
+        
+        @if (respuestaAuditoria > 0)
+        {
+            if (respuestaAuditoria == 1)
+            {
+                <a href="/SAG2/ProgramaAnualAuditorias/" style="display: block;">Hay @respuestaAuditoria auditoría sin realizar.</a>
+            }
+            else
+            { 
+                <a href="/SAG2/ProgramaAnualAuditorias/" style="display: block;">Hay @respuestaAuditoria auditorías sin realizar.</a>
+            }
+            <hr align="center" />
+        }
+        </div>
+    }
+    
+    @if (Usuario.esAdministrador || Session["CambioTipo"] != null)
+    {
+        <div class="aviso_left no-imprimir"><a href="/SAG2/Home/CambiarTipo?tipo=Administrador">Administrador</a> | <a href="/SAG2/Home/CambiarTipo?tipo=Supervisor">Supervisor</a> | <a href="/SAG2/Home/CambiarTipo?tipo=Usuario">Usuario</a></div>
+    }
+</body>
+</html>

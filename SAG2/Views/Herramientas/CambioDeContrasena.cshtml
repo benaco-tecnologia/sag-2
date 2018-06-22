@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "Cambiar Contraseña";
+}
+<div class="inicio">
+<br />
+<br />
+@Html.Raw(ViewBag.Mensaje)
+@using (Html.BeginForm())
+{
+ <fieldset>
+    <legend>Cambio de contraseña</legend>
+    <div class="editor-label expandidox2">
+        @Html.Label("Contraseña actual")
+    </div>
+    <div class="editor-field">
+        @Html.Password("Password")
+    </div>
+    <div class="editor-label expandidox2">
+        @Html.Label("Contraseña nueva")
+    </div>
+    <div class="editor-field">
+        @Html.Password("NewPassword")
+    </div>
+    <div class="editor-label expandidox2">
+        @Html.Label("Repita contraseña nueva")
+    </div>
+    <div class="editor-field">
+        @Html.Password("NewPassword2")
+    </div>
+    <p>
+        <input type="submit" value="Cambiar contraseña" />
+    </p>
+</fieldset>
+}
+<br />
+<br />
+</div>

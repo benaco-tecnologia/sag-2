@@ -1,0 +1,47 @@
+﻿@model IEnumerable<SAG2.Models.Persona>
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Personal";
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $(".SeleccionarPopUpPersonal").click(function () {
+            window.opener.document.getElementById("tipoBeneficiario").value = "1";
+            window.opener.document.getElementById("PersonaID").value = $(this).attr("PersonaID");
+            window.opener.document.getElementById("Beneficiario").value = $(this).attr("Beneficiario");
+            window.opener.document.getElementById("Rut").value = $(this).attr("Rut");
+            window.opener.document.getElementById("DVBuscar").value = $(this).attr("DV");
+            window.close();
+            return false;
+        });
+    }); 
+</script>
+<div class="top" style="height: 18px;">Personal&nbsp;&nbsp;</div>
+ <div id="contenido_popup">
+        <table cellpadding="5" border="1" align="center">
+    <tr>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Rut
+        </th>
+        <th class="controles"></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.NombreCompleto)
+        </td>
+        <td align="right">
+            @Html.DisplayFor(modelItem => item.RutDV)
+        </td>
+        <td>
+            <img src="@Url.Content("~/Content/Images/Badge-tick.png")" PersonaID="@Html.Raw(item.ID.ToString())" Rut="@Html.Raw(item.Rut)" DV="@Html.Raw(item.DV)" Beneficiario="@Html.Raw(item.NombreCompleto)" class="SeleccionarPopUpPersonal" alt="Seleccionar" width="15" height="15" style="border: 0;vertical-align: middle; cursor:pointer;" />
+        </td>
+    </tr>
+        }
+        </table>
+    </div>

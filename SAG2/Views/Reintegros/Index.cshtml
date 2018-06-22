@@ -1,0 +1,61 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Reintegros";
+}
+<div class="top" style="height: 28px;">Buscar: <input type="text" id="busqueda" />&nbsp;&nbsp;</div>
+ <div id="contenido_popup">
+   <table cellpadding="5" border="1" align="center">
+    <tr>
+        <th class="controles"></th>
+        <th>Nº Comp.</th>
+        <th>Fecha</th>
+        <th>Cta. Cte.</th>
+        <th>Monto $</th>
+        <th>Cuenta</th>
+        <th>Nº Cheque</th>
+        <th>Nº Egreso</th>
+        <th>Fecha</th>
+        <th>Cuenta Original</th>
+        <th>Glosa</th>
+        
+    </tr>
+
+@foreach (var item in Model) {
+    var style = "";
+        if (item.Nulo != null && item.Nulo.Equals("S"))
+        {
+            style = " style=\"text-decoration: line-through;\"";
+        }
+    
+        <tr@Html.Raw(style)>
+    <td>
+            <a href="@Url.Action("Edit", "Reintegros", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+        <td align="center">@Html.DisplayFor(modelItem => item.NumeroComprobante)</td>
+        <td>@item.Fecha.Value.ToShortDateString()</td>
+        <td>@Html.DisplayFor(modelItem => item.CuentaCorriente.NumeroLista)</td>
+        <td><strong>$@item.Monto_Ingresos.ToString("#,##0")</strong></td>
+        <td>@Html.DisplayFor(modelItem => item.Cuenta.NombreLista)</td>
+        <td>@Html.DisplayFor(modelItem => item.Cheque)</td>
+        @try
+        {
+            SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+            SAG2.Models.DetalleEgreso detalle = db.DetalleEgreso.Find(item.DetalleEgresoID);
+            <td align="center">@Html.Raw(detalle.Egreso.NumeroComprobante.ToString())</td>
+            <td>@Html.Raw(detalle.Egreso.Fecha.Value.ToShortDateString())</td>
+            <td>@Html.Raw(detalle.Cuenta.NombreLista)</td>
+            <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+        }
+        catch (Exception)
+        { 
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        }
+        
+    </tr>
+}
+    </table>
+</div>

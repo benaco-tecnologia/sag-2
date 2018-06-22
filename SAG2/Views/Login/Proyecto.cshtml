@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "~/Views/Shared/Entrada.cshtml";
+    ViewBag.Title = "Seleccionar proyecto";
+
+    int proyectoID = 0;
+
+    if (@ViewBag.ProyectoUsado != null && @ViewBag.ProyectoUsado != "")
+    {
+        proyectoID = Int32.Parse(@ViewBag.ProyectoUsado);
+    }
+}
+<div id="SAGBox" class="login">
+<h2 style="margin-left: 15px;">Seleccionar Proyecto</h2>
+@{
+    if (ViewBag.Administrador)
+    {
+        <p style="margin-left: 15px;">Seleccione un Proyecto uno para comenzar a trabajar.</p>
+    }
+    else
+    {
+        <p style="margin-left: 15px;">SAG2 ha detectado que usted tiene permisos sobre más de un Proyecto, por favor seleccione uno para comenzar a trabajar.</p>
+    }
+}
+<br />
+@using (Html.BeginForm())
+{
+<fieldset>
+    <div class="editor-label expandido">
+       Proyecto 
+    </div>
+    <div class="editor-field">
+        <select name="Proyecto" id="Proyecto">
+            <option value="-1"> - Seleccione proyecto</option>
+            @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+            {
+                if (proyectoID == Proyecto.ID)
+                {
+                    <option selected="selected" value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                }
+                else
+                {
+                    <option value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                }
+            }
+        </select>
+    </div>
+    <p>
+        <input type="submit" value="Seleccionar proyecto" class="boton" id="elegirProyecto" />
+    </p>
+</fieldset>
+}
+</div>

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<SAG2.Models.AuditoriasDocumento>
+
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Index";
+}
+<div class="top" style="height: 28px;">Buscar: <input type="text" id="busqueda" />&nbsp;&nbsp;</div>
+ <div id="contenido_popup">
+   <table cellpadding="5" border="1" align="center">
+    <tr>
+        <th>
+            Documento
+        </th>
+        <th>
+            Orden
+        </th>
+        <th>
+            Activo
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Documento)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Orden)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Activo)
+        </td>
+        <td>
+            <a href="@Url.Action("Edit", "AuditoriasDocumentos", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+
+</table>
+</div>

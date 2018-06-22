@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Conciliación Masiva";
+
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div id="SAGBox" style="min-height: 180px; padding: 0 15px;">
+<h2>@ViewBag.Title</h2>
+    @using (Html.BeginForm("ExportarConciliacionMasiva", "Banco"))
+{
+    <table border="0" class="sin-hover">
+    <tr>
+        <td>
+            <fieldset style="height: 100px; width: 220px;">
+                <legend>Período</legend>
+                <table class="sin-hover" align="center" cellspacing="0" cellpadding="5">
+                        <tr>
+                        <td>
+                            Mes
+                        </td>
+                        <td>
+                            <select name="Mes" id="Mes">
+                            @for (var i = 0; i < 12; i++)
+                            {
+                                <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1)) {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                            }
+                            </select>
+                        </td>
+                        <td rowspan="2"><input type="submit" value="Exportar" style="height:100%" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Año
+                        </td>
+                        <td>
+                            <select name="Periodo" id="Periodo">
+                            @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i) {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </td>
+        <td>
+        </td>
+    </tr>
+</table>
+    }
+</div>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<SAG2.Models.OpcionesSupervision>
+@{
+    ViewBag.Title = "Opciones de autorización";
+}
+@using (Html.BeginForm())
+{
+<div class="permisos">
+    <h2>@ViewBag.Title</h2>
+    <table align="center" cellpadding="5" width="100%">
+        <tr>
+            <th>Descripción</th>
+            <th>Si</th>
+            <th>No</th>
+        </tr>
+@foreach (var item in Model)
+{
+    <tr>
+        <th align="left">@item.Descripcion</th>
+        <td align="center"><input name="@Html.Raw("Opcion" + item.ID)" type="radio" value="true" @if (item.SI)
+                                                                                                 { @Html.Raw("checked=\"checked\"");
+                                                                                                 } /></td>
+        <td align="center"><input name="@Html.Raw("Opcion" + item.ID)" type="radio" value="false" @if (!item.SI)
+                                                                             { @Html.Raw("checked=\"checked\"");
+                                                                             } /></td>
+    </tr>
+}
+    </table>
+    <p align="right">
+        <input type="submit" value="Guardar" style="padding: 5px;" />
+    </p>
+    * Estas opciones son globales y se aplican a todos los Proyectos
+</div>
+}

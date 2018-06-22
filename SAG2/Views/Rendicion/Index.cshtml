@@ -1,0 +1,67 @@
+﻿@{
+    ViewBag.Title = "Generar rendición";
+    var periodos_anteriores = (List<SAG2.Models.Periodo>)@ViewBag.periodos_anteriores;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div class="inicio">
+<br />
+@Html.Raw(ViewBag.Mensaje)
+@using (Html.BeginForm("Guardar", "Rendicion"))
+{
+    @Html.Raw(@ViewBag.Mensaje)
+    var Proyecto = (SAG2.Models.Proyecto)Session["Proyecto"];
+    var Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+    <fieldset>
+        <input type="hidden" id="nroComprobantes" name="nroComprobantes" value="@ViewBag.nroComprobantes.ToString()" />
+        <input type="hidden" id="nroConciliados" name="nroConciliados" value="@ViewBag.nroConciliados.ToString()" />
+        <legend>Generar rendición de cuentas</legend>
+        <p>Al generar la rendición, el período actual se cerrará automáticamente.</p>
+        <p>Para continuar, debe ingresar las intervenciones realizadas durante el período en el Proyecto</p>
+        <table align="center">
+            <caption><strong>@Proyecto.NombreLista</strong></caption>
+            <tr>
+                <td align="right">Intervenciones @Html.Raw(@Meses[((int)Session["Mes"]) - 1]) @Html.Raw(Session["Periodo"].ToString())</td>
+                <td align="left"><input name="Intervenciones" id="Intervenciones" size="3" maxlength="3" /></td>
+            </tr>
+            <tr>
+                <td align="right">Provisión por Indemnización</td>
+                <td align="left">
+                @if (@ViewBag.DAP == 0 || true)
+                {
+                    <input type="hidden" id="IndemnizacionReq" name="IndemnizacionReq" value="true" />
+                    <input name="Indemnizacion" id="Indemnizacion" size="7" maxlength="10" value="0" />
+                }
+                else
+                { 
+                    <input type="hidden" id="IndemnizacionReq" name="IndemnizacionReq" value="false" />
+                    <input name="Indemnizacion" id="Indemnizacion" size="7" maxlength="10" value="0" readonly="readonly" style="background-color: #CCC;" />
+                }
+                </td>
+            </tr>
+        </table>
+        <br />
+    </fieldset>
+    <br />
+    <br />
+    <fieldset>
+        <p style="margin:0;">
+            <input type="submit" value="Guardar" name="GenerarRendicion" id="GenerarRendicion" />
+        </p>
+    </fieldset>
+    <br />
+}
+</div>

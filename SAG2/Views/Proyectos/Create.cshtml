@@ -1,0 +1,200 @@
+﻿@model SAG2.Models.Proyecto
+@{
+    ViewBag.Title = "Crear Proyecto";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div id="SAGBox">
+    <h3>Proyectos</h3>
+    <div id="controles">
+        <p><a href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false">BUSCAR</a></p>
+        <p>@Html.ActionLink("NUEVO", "Create")</p>
+    </div>
+    <div id="contenido" class="proyectos">
+@using (Html.BeginForm())
+{
+    @Html.Raw(@ViewBag.Mensaje)
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Datos del proyecto</legend>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td colspan="2">Datos generales</td>
+            <td colspan="2">Convenio</td>
+          </tr>
+          <tr>
+            <td style="width: 20%;">@Html.LabelFor(model => model.CodCodeni, "Cód. CODENI")</td>
+            <td>@Html.TextBoxFor(model => model.CodCodeni, new { @tabindex = "1", @style="border: 1px solid Blue;" })
+                <a href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false">
+                    <img src="@Url.Content("~/Content/Images/Buscar2.png")" alt="Buscar" title="Buscar" style="vertical-align: middle;" />
+                </a>
+            </td>
+            <td style="width: 20%;">@Html.LabelFor(model => model.Convenio.ResEx, "Res. Ex.")</td>
+            <td>@Html.TextBoxFor(model => model.Convenio.ResEx, new { @tabindex = "14" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.CodSename, "Cód. SENAME")</td>
+            <td>@Html.TextBoxFor(model => model.CodSename, new { @tabindex = "2" })</td>
+            <td>@Html.LabelFor(model => model.Convenio.NroPlazas, "Nº Plazas")</td>
+            <td>@Html.TextBoxFor(model => model.Convenio.NroPlazas, new { @tabindex = "15" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.Institucion, "Institución")</td>
+            <td>@Html.TextBoxFor(model => model.Institucion, new { @tabindex = "3", @style="border: 1px solid Blue;" })</td>
+            <td>@Html.LabelFor(model => model.EdadMinima, "Edad mínima")</td>
+            <td>@Html.TextBoxFor(model => model.EdadMinima, new { @tabindex = "16" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.Nombre, "Proyecto")</td>
+            <td>@Html.TextBoxFor(model => model.Nombre, new { @tabindex = "4", @style="border: 1px solid Blue;" })</td>
+            <td>@Html.LabelFor(model => model.EdadMaxima, "Edad máxima")</td>
+            <td>@Html.TextBoxFor(model => model.EdadMaxima, new { @tabindex = "17" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.SistemaAsistencialID, "Sistema asistencial")</td>
+            <td>@Html.DropDownList("SistemaAsistencialID", null, new { @tabindex = "5" })</td>
+            <td>@Html.LabelFor(model => model.ValorSubvencion, "Subvención diaria")</td>
+            <td>@Html.TextBoxFor(model => model.ValorSubvencion, new { @tabindex = "18" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.TipoProyectoID, "Tipo proyecto")</td>
+            <td>@Html.DropDownList("TipoProyectoID", null, new { @tabindex = "6" })</td>
+            <td>@Html.LabelFor(model => model.DiasAtencion, "Dias atención")</td>
+            <td>@Html.TextBoxFor(model => model.DiasAtencion, new { @tabindex = "19" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.DireccionID, "Dirección")</td>
+            <td>&nbsp;</td>
+            <td>@Html.LabelFor(model => model.Sexo)</td>
+            <td>
+                <select id="Sexo" name="Sexo" tabindex="20">
+                    <option value="F">Femenino</option>
+                    <option value="M">Masculino</option>
+                    <option value="A">Mixto</option>
+                </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Calle</td>
+            <td>@Html.TextBoxFor(model => model.Direccion.Calle, new { @tabindex = "7" })</td>
+            <td>@Html.LabelFor(model => model.Flexibilizacion)</td>
+            <td>
+                <input type="checkbox" name="Flexibilizacion" value="S" tabindex="21" />
+            </td>
+          </tr>
+          <tr>
+            <td>Número</td>
+            <td>@Html.TextBoxFor(model => model.Direccion.Numero, new { @tabindex = "8" })</td>
+            <td>Período convenio</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>Departamento</td>
+            <td>@Html.TextBoxFor(model => model.Direccion.Depto, new { @tabindex = "9" })</td>
+            <td>Desde</td>
+            <td>@Html.TextBoxFor(model => model.Convenio.FechaInicio, new { @tabindex = "22", @readonly = "readonly", @class = "calendario" })</td>
+          </tr>
+          <tr>
+            <td>@Html.Label("Región")</td>
+            <td>@Html.DropDownList("RegionID", null, new { @tabindex = "10" })</td>
+            <td>Hasta</td>
+            <td>@Html.TextBoxFor(model => model.Convenio.FechaTermino, new { @tabindex = "23", @readonly = "readonly", @class = "calendario" })</td>
+          </tr>
+          <tr>
+            <td>@Html.Label("Comuna")</td>
+            <td>
+                <select name="ComunaID" id="ComunaID" tabindex="11">
+                    <option>Seleccione región</option>
+                </select>
+            </td>
+            <td rowspan="2" valign="top">Comentarios</td>
+            <td rowspan="2">@Html.TextAreaFor(model => model.Convenio.Comentarios, new { @tabindex = "24" })</td>
+          </tr>
+          <tr>
+            <td valign="top">@Html.LabelFor(model => model.Fono, "Tél. contacto")</td>
+            <td valign="top">@Html.TextBoxFor(model => model.Fono, new { @tabindex = "12" })</td>
+          </tr>
+          <!--
+          <tr>
+            <td valign="top">@Html.LabelFor(model => model.Fax)</td>
+            <td valign="top">@Html.TextBoxFor(model => model.Fax, new { @tabindex = "13" })</td>
+          </tr>
+          -->   
+        </table>
+    </fieldset>
+    <p>&nbsp;</p>
+    <fieldset>
+        <legend>Opciones</legend>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td style="width: 120px;">@Html.Label("Período inicio Proyecto"):</td>
+                <td style="width: 173px;">
+                    <select name="PeriodoInicio" id="PeriodoInicio">
+                    @for (var i = DateTime.Now.Year; i <= DateTime.Now.Year + 1; i++)
+                    {
+                        <option value="@Html.Raw((@i).ToString())" @if (@i== DateTime.Now.Year)
+                                                                    {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                    }
+                    </select>
+                </td>
+                <td style="width: 120px;">@Html.Label("Mes inicio Proyecto"):</td>
+                <td>
+                    <select name="MesInicio" id="MesInicio">
+                    @for (var i = 0; i < 12; i++)
+                    {
+                        <option value="@Html.Raw((@i + 1).ToString())"@if  (DateTime.Now.Month == i + 1 )
+                                                                        {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                    }
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <p>&nbsp;</p>
+    <fieldset>
+        <legend>Supervisor</legend>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td style="width: 120px;">@Html.Label("Supervisor"):</td>
+                <td>@Html.DropDownList("PersonaID", string.Empty)</td>
+            </tr>
+        </table>
+    </fieldset>
+    <p>&nbsp;</p>
+    <fieldset>
+        <legend>Cuenta Corriente</legend>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="width: 120px;">@Html.Label("Banco"):</td>
+            <td>@Html.DropDownList("BancoID", string.Empty)</td>
+            <td style="width: 120px;">@Html.Label("Número"):</td>
+            <td>@Html.TextBox("Numero")</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td style="width: 120px;">@Html.Label("Saldo inicial"):</td>
+            <td>@Html.TextBox("SaldoInicial")</td>
+          </tr>
+        </table>
+    </fieldset>
+    <p>&nbsp;</p>
+    <fieldset style="text-align: right;">
+        <input type="submit" value="Guardar" style="height: 30px;" id="crearProyecto" />
+    </fieldset>
+}
+    </div>
+</div>

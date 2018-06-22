@@ -1,0 +1,196 @@
+﻿@model SAG2.Models.Proyecto
+@{
+    ViewBag.Title = "Modificar";
+}
+@{
+    SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+}
+
+<div id="SAGBox">
+    <h3>Proyectos</h3>
+    <div id="controles">
+        <p><a href="../Index" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false">BUSCAR</a></p>
+        @if (Usuario.esAdministrador)
+        {
+        <p>@Html.ActionLink("NUEVO", "Create")</p>
+        <p><a href="../Eliminar/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este Proyecto, se borrara toda la información de la Base de Datos?');">ELIMINAR</a></p>
+        }
+        @if (Usuario.esAdministrador || Usuario.esSupervisor)
+        {
+        <p><a href="../Cerrar/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Al cerrar este Proyecto no podrá realizar más modificaciones, desea continuar?');">CERRAR</a></p>    
+        }
+        <p>@Html.ActionLink("CANCELAR", "Create")</p>
+    </div>
+    <div id="contenido" class="personal">
+@using (Html.BeginForm())
+{
+    @Html.Raw(@ViewBag.Mensaje)
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.MesInicio)
+    @Html.HiddenFor(model => model.PeriodoInicio)
+    @Html.Hidden("DireccionID", Model.DireccionID)
+    @Html.Hidden("ConvenioID", Model.ConvenioID)
+       <fieldset>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td colspan="2">Datos generales</td>
+            <td colspan="2">Convenio</td>
+          </tr>
+          <tr>
+            <td style="width: 20%;">@Html.LabelFor(model => model.CodCodeni, "Cód. CODENI")</td>
+            <td>
+                @if (Usuario.esAdministrador)
+                {
+                    @Html.TextBoxFor(model => model.CodCodeni, new { @tabindex = "1" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.CodCodeni, new { @tabindex = "1", @readonly = "readonly" })
+                }
+                <a href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false">
+                    <img src="@Url.Content("~/Content/Images/Buscar2.png")" alt="Buscar" title="Buscar" style="vertical-align: middle;" />
+                </a>
+            </td>
+            <td style="width: 20%;">@Html.LabelFor(model => model.Convenio.ResEx, "Res. Ex.")</td>
+            <td>@Html.TextBoxFor(model => model.Convenio.ResEx, new { @tabindex = "14" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.CodSename, "Cód. SENAME")</td>
+            <td>@Html.TextBoxFor(model => model.CodSename, new { @tabindex = "2" })</td>
+            <td>@Html.LabelFor(model => model.Convenio.NroPlazas, "Nº Plazas")</td>
+            <td>@Html.TextBoxFor(model => model.Convenio.NroPlazas, new { @tabindex = "15" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.Institucion, "Institución")</td>
+            <td>
+                @if (Usuario.esAdministrador)
+                {
+                    @Html.TextBoxFor(model => model.Institucion, new { @tabindex = "3" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.Institucion, new { @tabindex = "3", @readonly = "readonly" })
+                }
+            </td>
+            <td>@Html.LabelFor(model => model.EdadMinima, "Edad mínima")</td>
+            <td>@Html.TextBoxFor(model => model.EdadMinima, new { @tabindex = "16" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.Nombre, "Proyecto")</td>
+            <td>
+                @if (Usuario.esAdministrador)
+                {
+                    @Html.TextBoxFor(model => model.Nombre, new { @tabindex = "4" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.Nombre, new { @tabindex = "4", @readonly = "readonly" })
+                }
+            </td>
+            <td>@Html.LabelFor(model => model.EdadMaxima, "Edad máxima")</td>
+            <td>@Html.TextBoxFor(model => model.EdadMaxima, new { @tabindex = "17" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.SistemaAsistencialID, "Sistema asistencial")</td>
+            <td>@Html.DropDownList("SistemaAsistencialID", null, new { @tabindex = "5" })</td>
+            <td>@Html.LabelFor(model => model.ValorSubvencion, "Subvención diaria")</td>
+            <td>@Html.TextBoxFor(model => model.ValorSubvencion, new { @tabindex = "18" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.TipoProyectoID, "Tipo proyecto")</td>
+            <td>@Html.DropDownList("TipoProyectoID", null, new { @tabindex = "6" })</td>
+            <td>@Html.LabelFor(model => model.DiasAtencion, "Dias atención")</td>
+            <td>@Html.TextBoxFor(model => model.DiasAtencion, new { @tabindex = "19" })</td>
+          </tr>
+          <tr>
+            <td>@Html.LabelFor(model => model.DireccionID, "Dirección")</td>
+            <td>&nbsp;</td>
+            <td>@Html.LabelFor(model => model.Sexo)</td>
+            <td>
+                <select id="Sexo" name="Sexo" tabindex="20">
+                    <option value="F"@if (Model.Sexo == "F") {@Html.Raw(" selected=\"selected\"")}>Femenino</option>
+                    <option value="M"@if (Model.Sexo == "M") {@Html.Raw(" selected=\"selected\"")}>Masculino</option>
+                    <option value="A"@if (Model.Sexo == "A") {@Html.Raw(" selected=\"selected\"")}>Mixto</option>
+                </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Calle</td>
+            <td>@Html.TextBoxFor(model => model.Direccion.Calle, new { @tabindex = "7" })</td>
+            <td>@Html.LabelFor(model => model.Flexibilizacion)</td>
+            <td>
+                @if (Model.Flexibilizacion != null)
+                {
+                <input type="checkbox" name="Flexibilizacion" value="S" checked="checked" tabindex="21" />
+                }
+                else
+                { 
+                <input type="checkbox" name="Flexibilizacion" value="S" tabindex="21" />
+                }
+            </td>
+          </tr>
+          <tr>
+            <td>Número</td>
+            <td>@Html.TextBoxFor(model => model.Direccion.Numero, new { @tabindex = "8" })</td>
+            <td>Período convenio</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>Departamento</td>
+            <td>@Html.TextBoxFor(model => model.Direccion.Depto, new { @tabindex = "9" })</td>
+            <td>Desde</td>
+            <td>@{
+                if (Model.Convenio.FechaInicio != null)
+                {
+                        @Html.TextBox("FechaInicio", Model.Convenio.FechaInicio.Value.ToShortDateString(), new { @tabindex = "22", @class = "calendario" })
+                }
+                else
+                {
+                        @Html.TextBox("FechaInicio", string.Empty, new { @tabindex = "22", @class = "calendario" })
+                }
+                    }</td>
+          </tr>
+          <tr>
+            <td>@Html.Label("Región")</td>
+            <td>@Html.DropDownList("RegionID", null, new { @tabindex = "10", @comuna = Model.Direccion.ComunaID.ToString() })</td>
+            <td>Hasta</td>
+            <td>@{
+                if (Model.Convenio.FechaTermino != null)
+                {
+                        @Html.TextBox("FechaTermino", Model.Convenio.FechaTermino.Value.ToShortDateString(), new { @tabindex = "23", @class = "calendario" })
+                }
+                else
+                {
+                        @Html.TextBox("FechaTermino", string.Empty, new { @tabindex = "22", @class = "calendario" })
+                }
+                    }</td>
+          </tr>
+          <tr>
+            <td>@Html.Label("Comuna")</td>
+            <td>
+                <select name="ComunaID" id="ComunaID" tabindex="11">
+                    <option>Seleccione región</option>
+                </select>
+            </td>
+            <td rowspan="2" valign="top">Comentarios</td>
+            <td rowspan="2">@Html.TextAreaFor(model => model.Convenio.Comentarios, new { @tabindex = "24" })</td>
+          </tr>
+          <tr>
+            <td valign="top">@Html.LabelFor(model => model.Fono, "Tél. contacto")</td>
+            <td valign="top">@Html.TextBoxFor(model => model.Fono, new { @tabindex = "12" })</td>
+          </tr>
+          <!--
+          <tr>
+            <td valign="top">@Html.LabelFor(model => model.Fax)</td>
+            <td valign="top">@Html.TextBoxFor(model => model.Fax, new { @tabindex = "13" })</td>
+          </tr>         
+          -->
+        </table>
+        <p>
+            <input type="submit" value="Guardar" />
+        </p>
+    </fieldset>
+}
+    </div>
+</div>

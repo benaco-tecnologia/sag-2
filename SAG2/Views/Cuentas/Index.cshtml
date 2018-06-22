@@ -1,0 +1,25 @@
+﻿@model IEnumerable<SAG2.Models.Cuenta>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Cuentas";
+}
+<div class="top" style="height: 28px;">Buscar: <input type="text" id="busqueda" />&nbsp;&nbsp;</div>
+<div id="contenido_popup">
+    <table cellpadding="5" border="1" align="center">
+        <tr>
+            <th>Cuenta</th>
+            <th style="width: 54px;"></th>
+        </tr>
+@foreach (var item in Model)
+{
+        <tr title="@item.Descripcion">
+            <td>@Html.DisplayFor(modelItem => item.Codigo) @Html.DisplayFor(modelItem => item.Nombre)</td>
+            <td>
+                <a href="@Url.Action("Subir", "Cuentas", new { id = item.ID })" title="Subir"><img src="@Url.Content("~/Content/Images/arriba.png")" alt="Arriba" width="15" height="15" style="border: 0;" /></a>
+                <a href="@Url.Action("Bajar", "Cuentas", new { id = item.ID })" title="Bajar"><img src="@Url.Content("~/Content/Images/abajo.png")" alt="Abajo" width="15" height="15" style="border: 0;" /></a>
+                <a href="@Url.Action("Edit", "Cuentas", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+            </td>
+        </tr>
+}
+    </table>
+</div>

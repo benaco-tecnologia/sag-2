@@ -1,0 +1,313 @@
+﻿@{
+    ViewBag.Title = "Página de inicio";
+    SAG2.Models.Proyecto Proyecto = (SAG2.Models.Proyecto)@ViewBag.Proyecto;
+    SAG2.Models.CuentaCorriente CuentaCorriente = (SAG2.Models.CuentaCorriente)@ViewBag.CuentaCorriente;
+    SAG2.Models.Saldo Saldo = (SAG2.Models.Saldo)@ViewBag.Saldo;
+    List<SAG2.Models.Rol> Responsabilidades = (List<SAG2.Models.Rol>)@ViewBag.Roles;
+    List<SAG2.Models.Auditoria> Auditorias = (List<SAG2.Models.Auditoria>)@ViewBag.Auditorias;
+    List<SAG2.Models.Supervision> Supervisiones = (List<SAG2.Models.Supervision>)@ViewBag.Supervisiones;
+    List<SAG2.Models.Contrato> Contratos = (List<SAG2.Models.Contrato>)@ViewBag.Contratos;
+    int periodo = (int)Session["Periodo"];
+    int mes = (int)Session["Mes"];
+
+    int i = 1;
+}
+<div class="inicio">
+    @Html.Raw(@ViewBag.Mensaje)
+    @if (Proyecto.MesInicio != null)
+    {
+        if (!(DateTime.Now.Year > Proyecto.PeriodoInicio || (DateTime.Now.Month >= Proyecto.MesInicio && DateTime.Now.Year >= Proyecto.PeriodoInicio) || Proyecto.MesInicio == null))
+        {
+            <div class="warning">Este proyecto tiene como fecha de inicio el @Proyecto.MesInicio del @Proyecto.PeriodoInicio, antes de esa fecha no puede generar ningún movimiento.</div>
+        }
+    }
+    <h2 align="center">Antecedentes del Proyecto @Proyecto.NombreLista</h2>
+    <table align="center" style="width: 100%;">
+        <tbody>
+            <tr>
+                <th style="width:">Institución</th>
+                <td colspan="5">@Html.Raw(Proyecto.Institucion)</td>
+            </tr>
+            <tr>
+                <th>Proyecto</th>
+                <td style="width:">@Html.Raw(Proyecto.Nombre)</td>
+                <th style="width:">Cód. CODENI</th>
+                <td align="right">@Html.Raw(Proyecto.CodCodeni)</td>
+                <th style="width:">Cód. SEMANE</th>
+                <td align="right">@{
+                    if (Proyecto.CodSename != null)
+                    {
+                        @Html.Raw(Proyecto.CodSename)
+                    }
+                    else
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                    }</td>
+            </tr>
+            <tr>
+                <th>Dirección</th>
+                <td colspan="3">@{
+                    if (Proyecto.Direccion.Calle == null)
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                    else
+                    {
+                        if (Proyecto.Direccion.Calle != null)
+                        {
+                            @Html.Raw(Proyecto.Direccion.Calle.ToUpper())
+                        }
+                        
+                        if (Proyecto.Direccion.Numero != null)
+                        {
+                            @Html.Raw(" " + Proyecto.Direccion.Numero.ToUpper())
+                        }
+
+                        if (Proyecto.Direccion.Depto != null)
+                        {
+                            @Html.Raw(" " + Proyecto.Direccion.Depto.ToUpper())
+                        }
+                        
+                        if (Proyecto.Direccion.Comuna.Nombre != null)
+                        {
+                            @Html.Raw(", " + Proyecto.Direccion.Comuna.Nombre.ToUpper())
+                        }
+                    }
+                    }</td>
+                <th style="width:">Tél.</th>
+                <td align="right">@{
+                    if (Proyecto.Fono != null)
+                    {
+                        @Html.Raw(Proyecto.Fono)
+                    }
+                    else
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                    }</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>&nbsp;</p>
+    <h2>Antecedentes del Convenio</h2>
+    <table align="center" style="width: 100%;">
+        <tbody>
+            <tr>
+                <th>Res. Ex.</th>
+                <td align="right">@{
+                    if (Proyecto.Convenio.ResEx != null)
+                    {
+                        @Html.Raw(Proyecto.Convenio.ResEx)
+                    }
+                    else
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                    }</td>
+                <th>Nº de Plazas</th>
+                <td align="right">@{
+                    if (Proyecto.Convenio.NroPlazas != null)
+                    {
+                        @Html.Raw(Proyecto.Convenio.NroPlazas.ToString())
+                    }
+                    else
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                    }</td>
+            </tr>
+            <tr>
+                <th>Fecha inicio</th>
+                <td>@{
+                    if (Proyecto.Convenio.FechaInicio != null)
+                    {
+                        @Html.Raw(Proyecto.Convenio.FechaInicio.Value.ToShortDateString());
+                    }
+                    else
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                    }</td>
+                <th>Fecha termino</th>
+                <td>@{
+                    if (Proyecto.Convenio.FechaTermino != null)
+                    {
+                        @Html.Raw(Proyecto.Convenio.FechaTermino.Value.ToShortDateString());
+                    }
+                    else
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                    }</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>&nbsp;</p>
+    <h2>Responsabilidades administrativas</h2>
+    <table align="center" style="width: 100%;">
+        <tbody>
+    @foreach (SAG2.Models.Rol rol in Responsabilidades)
+    { 
+            <tr>
+                <td style="width: 15px;">@i</td>
+                <td>@Html.Raw(rol.TipoRol.Nombre.ToUpper())</td>
+                <td>@Html.Raw(rol.Persona.NombreLista.ToUpper())</td>
+                <td>
+                    @if (rol.Persona.CorreoElectronico != null)
+                    {
+                        @Html.Raw(rol.Persona.CorreoElectronico.ToUpper())
+                    }
+                    else
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                </td>
+            </tr>
+               i++;
+    }
+        </tbody>
+    </table>
+    <p>&nbsp;</p>
+    <h2>Contratos</h2>
+    @{
+        if (Contratos.Count == 0)
+        {
+            @Html.Raw("<h4 align=\"center\">No existen servicios contratados para este Proyecto, haga <a href=\"/SAG2/Contratos/Create\">click acá</a> para agregar uno.</h4>");
+        }
+        else
+        {
+           <table align="center" style="width: 100%;">
+        <tbody>
+    @{i = 1;}
+    @foreach (SAG2.Models.Contrato Contrato in Contratos)
+    { 
+            <tr>
+                <td style="width: 15px;">@i</td>
+                <td style="width: 40%;">@Html.Raw(Contrato.Servicio.Nombre.ToUpper())</td>
+                <td style="width: 40%;">@Html.Raw(Contrato.Nombre.ToUpper())</td>
+                <td align="right">@Html.Raw(Contrato.Monto.ToString("#,###"))</td>
+                <td>@Contrato.Moneda</td>
+            </tr>
+                              i++;
+    }
+        </tbody>
+    </table> 
+        }
+    }
+    
+    <p>&nbsp;</p>
+    <h2>Antecedentes administrativos, financieros y contables</h2>
+    <table align="center" style="width: 100%;">
+        <tbody>
+            <tr>
+                <th style="width: 16.6%">Valor subvención</th>
+                <td style="width: 16.6%" align="right">@{
+                    if (Proyecto.ValorSubvencion != null)
+                    {
+                        @Html.Raw("$" + Proyecto.ValorSubvencion.Value.ToString("#,###"));
+                    }
+                    else
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                    }</td>
+                <th style="width: 16.6%">Subvención mes</th>
+                <td style="width: 16.6%" align="right">@{
+                    if (Proyecto.Convenio.NroPlazas != null && Proyecto.ValorSubvencion != null)
+                    {
+                        @Html.Raw("$" + (Proyecto.Convenio.NroPlazas * Proyecto.ValorSubvencion.Value).ToString("#,###"));
+                    }
+                    else
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                    }</td>
+                <th style="width: 16.6%">Subvención año</th>
+                <td style="width: 16.6%" align="right">@{
+                    if (Proyecto.Convenio.NroPlazas != null && Proyecto.ValorSubvencion != null)
+                    {
+                        @Html.Raw("$" + (12 * Proyecto.Convenio.NroPlazas * Proyecto.ValorSubvencion.Value).ToString("#,###"))
+                    }
+                    else
+                    {
+                        @Html.Raw("<span style=\"background-color: red; color: white;\">SIN INFORMACIÓN</span>");
+                    }
+                    }</td>
+            </tr>
+            <tr>
+                <th>Cuenta corriente</th>
+                <td align="right" colspan="2"><strong>@Html.Raw(CuentaCorriente.Numero)</strong></td>
+                <th>Banco</th>
+                <td colspan="2"><strong>@Html.Raw(CuentaCorriente.Banco.Nombre.ToUpper())</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>Auditorías CODENI</h3>
+    @if (Auditorias.Count == 0)
+    {
+        @Html.Raw("<p>No existen auditorías.</p>")
+    }
+    else
+    {
+        i = 1;
+    <table align="center" style="width: 100%;">
+        <tbody>
+            <tr>
+                <th>Nº</th>
+                <th>Fecha</th>
+                <th>Respuesta</th>
+                <th>Obs. Pendientes</th>
+                <th>Seguimiento</th>
+            </tr>
+    @foreach (SAG2.Models.Auditoria Auditoria in Auditorias)
+    { 
+            <tr>
+                <td>@i</td>
+                <td>@Html.Raw(Auditoria.Fecha.ToShortDateString())</td>
+                <td>@Html.Raw(Auditoria.Respuesta)</td>
+                <td>@Html.Raw(Auditoria.ObsPendientes)</td>
+                <td>@Html.Raw(Auditoria.Seguimiento)</td>
+            </tr>
+               i++;
+    }
+        </tbody>
+    </table>
+    }
+    <h3>Supervisiones SENAME</h3>
+    @if (Supervisiones.Count == 0)
+    {
+        @Html.Raw("<p>No existen supervisiones.</p>")
+    }
+    else
+    {
+        i = 1;
+    <table align="center" style="width: 100%;">
+        <tbody>
+            <tr>
+                <th>Nº</th>
+                <th>Fecha</th>
+                <th>Respuesta</th>
+                <th>Obs. Pendientes</th>
+                <th>Seguimiento</th>
+            </tr>
+    @foreach (SAG2.Models.Supervision Supervision in Supervisiones)
+    { 
+            <tr>
+                <td>@i</td>
+                <td>@Html.Raw(Supervision.Fecha.ToShortDateString())</td>
+                <td>@Html.Raw(Supervision.Respuesta)</td>
+                <td>@Html.Raw(Supervision.ObsPendientes)</td>
+                <td>@Html.Raw(Supervision.Seguimiento)</td>
+            </tr>
+               i++;
+    }
+        </tbody>
+    </table>
+    }
+</div>
+@if (Proyecto.CodSename == null)
+{
+    @Html.Raw("<script>alert('Debe ingresar el Codigo Sename.');</script>");
+}

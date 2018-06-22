@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Generar archivo SenaInfo";
+    ViewBag.mes = (int)Session["Mes"];
+    ViewBag.periodo = (int)Session["Periodo"];
+    
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div class="inicio" style="padding: 0 13px;">
+@using (Html.BeginForm("Exportar", "SenaInfo"))
+{
+    <h2>Exportar a Senainfo</h2>
+    <p>Seleccione período a exportar:</p>
+    <table class="sin-hover" align="center" cellspacing="0" cellpadding="5">
+        <tr>
+            <td>
+                Mes
+            </td>
+            <td>
+                <select name="Mes" id="Mes">
+                @for (var i = 0; i < 12; i++)
+                {
+                    <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1))
+                                                                    {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                }
+                </select>
+            </td>
+            <td rowspan="2"><input type="submit" value="Generar archivo" style="height:100%" /></td>
+            <td rowspan="2">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Año
+            </td>
+            <td>
+                <select name="Periodo" id="Periodo">
+                @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                {
+                    <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
+                                                                {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                }
+                </select>
+            </td>
+        </tr>
+    </table>
+}
+    <br />
+    <br />
+</div>

@@ -1,0 +1,164 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+@{
+    ViewBag.Title = "Reporte de Honorarios";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+
+    int Periodo = @ViewBag.Periodo;
+    int Mes = @ViewBag.Mes;
+}
+<div id="SAGBox" style="width: 90%;">
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm())
+{
+<table border="0" class="sin-hover">
+    <tr>
+        <td>
+            <fieldset style="width: 400px; height: 100px;">
+                <legend>Período</legend>
+                <table class="sin-hover" align="center" cellspacing="0" cellpadding="5">
+                        <tr>
+                        <td>
+                            Mes
+                        </td>
+                        <td>
+                            <select name="Mes" id="Mes">
+                            @for (var i = 0; i < 12; i++)
+                            {
+                                <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.Mes == (i + 1))
+                                                                              {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                            }
+                            </select>
+                        </td>
+                        <td rowspan="2"><input type="submit" name="Resultados" value="Ver resultados" style="height:100%" /></td>
+                        <td rowspan="2"><input type="button" id="ImprimirReporteHH" name="Imprimir" value="Imprimir" style="height:100%" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Año
+                        </td>
+                        <td>
+                            <select name="Periodo" id="Periodo">
+                            @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i)
+                                                                           {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </td>
+    </tr>
+</table>
+}
+<br />
+<table cellpadding="5" border="1" align="center" width="100%">
+    <tr>
+        <th>Período</th>
+        <th>Fecha</th>
+        <th>Proyecto</th>
+        <th nowrap>Nº Boleta</th>
+        <th>Egreso</th>
+        <th>Nombre</th>
+        <th>Glosa</th>
+        <th>Rut</th>
+        <th>DV</th>
+        <th nowrap>Monto $</th>
+        <th nowrap>Retención $</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        int totalProyecto = 0;
+        bool tieneBoletas = false;
+        SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+        List<SAG2.Models.BoletaHonorario> boletas = db.BoletaHonorario.Where(d => d.ProyectoID == item.ID).Where(d => d.Periodo == Periodo).Where(d => d.Mes == Mes).Where(d => d.EgresoID != null).OrderBy(d => d.NroBoleta).ToList();
+        foreach (var detalle in boletas)
+        {
+            tieneBoletas = true;
+        <tr>
+            <td>@detalle.Periodo @detalle.Mes</td>
+            <td>@detalle.Fecha.ToShortDateString()</td>
+            <td align="right">@item.CodCodeni</td>
+            <td align="right">@detalle.NroBoleta</td>
+            <td align="center">@detalle.Egreso.NumeroComprobante</td>
+            <td>
+                @if (detalle.Persona != null)
+                {
+                    @detalle.Persona.NombreCompleto.ToUpper()
+                }
+                else if (detalle.Proveedor != null)
+                {
+                    @detalle.Proveedor.Nombre.ToUpper()
+                }
+                else
+                { 
+                    @Html.Raw(@detalle.Beneficiario.ToUpper())
+                }
+            </td>
+            <td>
+                @if (detalle.Concepto.Length > 30)
+                {
+                    @detalle.Concepto.Substring(0, 30).ToUpper()
+                }
+                else                
+                {
+                    @detalle.Concepto.ToUpper()
+                }
+            </td>
+            <td align="right">@if (detalle.Persona != null)
+                              {
+                    @detalle.Persona.Rut
+                              }
+                              else if (detalle.Proveedor != null)
+                              {
+                    @detalle.Proveedor.Rut
+                              }
+                              else
+                              { 
+                    @Html.Raw(@detalle.Rut)
+                              }</td>
+            <td align="center">@if (detalle.Persona != null)
+                               {
+                    @Html.DisplayFor(modelItem => detalle.Persona.DV)
+                               }
+                               else if (detalle.Proveedor != null)
+                               {
+                    @Html.DisplayFor(modelItem => detalle.Proveedor.DV)
+                               }
+                               else
+                               { 
+                    @Html.Raw(@detalle.DV)
+                               }</td>
+            <td align="right">@detalle.Bruto.ToString("#,###")</td>
+            <td align="right">@detalle.Retencion.ToString("#,###")</td>
+        </tr>
+            totalProyecto = totalProyecto + @detalle.Bruto;
+        }
+        if (tieneBoletas)
+        {
+        <tr>
+            <td align="right" colspan="9">Total</td>
+            <td align="right">@totalProyecto.ToString("#,###")</td>
+            <td align="right"></td>
+        </tr>
+        }
+    }
+    </table>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
